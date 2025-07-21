@@ -279,3 +279,103 @@ dfs(far_node)
 
 print(max_distance)
 ```
+# 이진 탐색
+
+## 개념
+
+---
+
+- 데이터가 정렬돼 있는 상태에서 원하는 값을 찾아내는 알고리즘
+- 중앙값과 찾고자 하는 값을 비교해 데이터 크기를 절반씩 줄이면서 대상을 찾는다
+- 이진 탐색 과정
+    1. 데이터셋의 중앙값을 선택
+    2. 중앙값 > 타깃 데이터일 때 중앙값 기준으로 왼쪽 데이터셋 선택
+    3. 중앙값 < 타깃 데이터일 때 중앙값 기준으로 오른쪽 데이터셋 선택
+    4. 과정 1~3을 반복하다가 중앙값 == 타깃 데이터일 때 탐색 종료
+
+---
+
+## 문제
+
+---
+
+### 백준1920 - 원하는 정수 찾기(실버4)
+
+```python
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+n_nums = list(map(int, input().split()))
+n_nums.sort()
+result = []
+
+m = int(input())
+m_nums = list(map(int, input().split()))
+
+def binary_search(arr, start, end, target):
+    if start > end:
+        return 0
+    
+    mid = (start + end) // 2
+    if arr[mid] > target:
+        return binary_search(arr, start, mid-1, target)
+    elif arr[mid] < target:
+        return binary_search(arr, mid+1, end, target)
+    else:
+        return 1
+
+for i in  m_nums:
+    result.append(binary_search(n_nums, 0, n-1, i))
+
+for r in result:
+    print(r)
+```
+
+이진 탐색을 사용 
+
+start > end 조건이 중요, 무한 루프에 빠지지 않기 위해 종료 조건 걸어놓음
+
+---
+
+### 백준2343 - 기타 레슨(실버1)
+
+```python
+import sys
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+length = list(map(int, input().split()))
+
+start = max(length)
+end = sum(length)
+
+def binary_search(arr, start, end, target):
+    if start > end:
+        return start
+    
+    sum = 0
+    count = 0
+    size = (start+end)//2
+    for i in arr:
+        sum += i
+        if sum > size:
+            sum = i
+            count += 1
+        elif sum == size:
+            sum = 0
+            count += 1
+    if sum > 0:
+        count += 1
+        
+    if count <= target:
+        return binary_search(arr, start, size-1, target)
+    else:
+        return binary_search(arr, size+1, end, target)
+
+print(binary_search(length, start, end, m))
+```
+
+블루레이의 최소 용량과 최대 용량을 구한 다음에 이진 탐색을 이용
+
+---
